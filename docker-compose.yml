@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+    db:
+        image: postgres:alpine
+        restart: always
+        environment:
+            POSTGRES_USER: o__ni
+            POSTGRES_DB: mydb
+            POSTGRES_PASSWORD: "${DB_PASSWORD}"
+        ports:
+            - 5432:5432
+
+    bot:
+        build: ./
+        command: ./wait-for-postgres.sh ./goipbot
+        ports:
+            - 8080:8080
+        depends_on:
+            - db
+        environment:
+            DB_PASSWORD: ${DB_PASSWORD}
+            # - DB_PASSWORD: "password"
+            IPSTACK_TOKEN: ${IPSTACK_TOKEN}
+            BOT_TOKEN: ${BOT_TOKEN}
